@@ -1,0 +1,38 @@
+server:
+  port: 8000  # Gateway는 보통 8000번이나 8080번을 사용합니다.
+
+spring:
+  application:
+    name: gateway-service
+  
+  cloud:
+    gateway:
+      # 1. CORS 설정 (Vue.js와 통신하기 위해 필수)
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173" # Vue.js 개발 서버 주소 (Vite 기본 포트)
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+      # 2. 라우팅 규칙 (나중에 만들 Monitoring Service로 가는 길)
+      routes:
+        - id: monitoring-service
+          uri: lb://MONITORING-SERVICE # 'lb'는 Load Balancer. 유레카에 등록된 대문자 이름 사용
+          predicates:
+            - Path=/api/monitoring/** # 이 주소로 들어오면 위 서비스로 토스해라
+          filters:
+            - RewritePath=/api/monitoring/(?<segment>.*), /$\{segment} # (선택사항) 실제 서비스엔 /api/monitoring 떼고 전달
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/ # Discovery Service 주소
