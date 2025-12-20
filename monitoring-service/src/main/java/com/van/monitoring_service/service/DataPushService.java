@@ -4,6 +4,8 @@ import com.van.monitoring_service.domain.Transaction;
 import com.van.monitoring_service.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope; // 추가
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,28 +15,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@RefreshScope // <--- 설정값이 바뀌면 이 클래스를 새로고침 하겠다는 뜻!
 public class DataPushService {
 
     private final TransactionRepository transactionRepository;
-    private final SimpMessagingTemplate messagingTemplate; // 메시지 발송 도구
+    private final SimpMessagingTemplate messagingTemplate;
 
-    // 3초(3000ms)마다 실행
+    // Config Server에서 값 주입 (기본값 100000)
+    @Value("${monitoring.criteria.high-amount:100000}")
+    private Long highAmountCriteria;
+
     @Scheduled(fixedRate = 3000)
     public void pushRealTimeData() {
-        try {
-            // 1. DB에서 최근 거래내역 10건 조회
-            List<Transaction> transactions = transactionRepository.findRecentTransactions();
-            
-            // 2. 데이터가 있다면 WebSocket 구독자들에게 전송
-            if (transactions != null && !transactions.isEmpty()) {
-                // "/topic/transactions" 채널을 구독 중인 프론트엔드에게 데이터 발송
-                messagingTemplate.convertAndSend("/topic/transactions", transactions);
-                
-                // 로그 확인용
-                log.info("📡 Real-time data pushed via WebSocket: {} items", transactions.size());
+        List<Transaction> transactions = transactionRepository.findRecentTransactions();
+        
+        // [로직 추가] 설정된 기준금액보다 크면 Log를 찍거나 상태를 변경
+        for (Transaction t : transactions) {
+            if (t.getAmount() >= highAmountCriteria) {
+                log.warn("🚨 고액 결제 감지! (기준: {}원, 결제액: {}원)", highAmountCriteria, t.getAmount());
+                // 필요하다면 여기서 t.setStatus("HIGH_RISK"); 등으로 바꿔서 보낼 수도 있음
             }
-        } catch (Exception e) {
-            log.error("❌ Error pushing data: ", e);
         }
+
+        messagingTemplate.convertAndSend("/topic/transactions", transactions);
     }
 }

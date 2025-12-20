@@ -1,0 +1,5 @@
+monitoring:
+  scheduler:
+    rate: 3000           # 3초
+  criteria:
+    high-amount: 50000   # 5만원 이상이면 강조

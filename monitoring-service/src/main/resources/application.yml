@@ -4,6 +4,13 @@ server:
 spring:
   application:
     name: monitoring-service
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
   
   datasource:
     # ClickHouse 연결 정보 (IP, Port, DB명 확인 필요)
