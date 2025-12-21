@@ -39,11 +39,11 @@ onUnmounted(() => stompClient && stompClient.deactivate());
   <div class="dashboard-wrapper">
     <header>
       <div class="left">
-        <button @click="router.push('/')">🏠</button>
+        <button class="home-btn" @click="router.push('/')">🏠</button>
         <h2>VAN 통합 관제 (Wide-View)</h2>
       </div>
       <div class="right">
-        <span class="live-badge">● LIVE SYSTEM</span>
+        <span class="live-badge"><span class="live-dot"></span>LIVE SYSTEM</span>
         <span class="clock">{{ new Date().toLocaleTimeString() }}</span>
       </div>
     </header>
@@ -62,40 +62,60 @@ onUnmounted(() => stompClient && stompClient.deactivate());
 
 <style scoped>
 .dashboard-wrapper {
-  background-color: #1e1e2f; /* Dark Theme */
+  background-color: var(--bg-primary); /* 메인 배경색 적용 */
   height: 100vh;
   display: flex;
   flex-direction: column;
-  color: #e0e0e0;
 }
 
 header {
-  background: #27293d;
-  padding: 0 20px;
+  background-color: var(--bg-secondary); /* 헤더 배경색 */
+  padding: 0 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #333;
-  height: 60px; /* 헤더 높이 살짝 키움 */
+  height: 64px;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-header h2 { margin: 0; font-size: 1.2rem; color: white; letter-spacing: 1px; }
-header button { background: #3c3f58; border: none; color: white; cursor: pointer; padding: 6px 12px; border-radius: 4px; margin-right: 15px; transition: 0.2s; }
-header button:hover { background: #505475; }
 
-.live-badge { color: #00b894; font-weight: bold; font-size: 0.85rem; margin-right: 20px; animation: blink 1.5s infinite; }
-.clock { font-family: 'Courier New', monospace; font-size: 1.1rem; color: #fff; font-weight: bold; }
+.left { display: flex; align-items: center; gap: 15px; }
+header h2 { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
 
-/* [핵심] 3x2 그리드 스타일 */
+.home-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer; padding: 8px 12px; border-radius: 8px;
+  display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.home-btn:hover { background: var(--border-color); color: var(--text-primary); }
+
+.right { display: flex; align-items: center; gap: 20px; }
+.live-badge {
+  background-color: rgba(16, 185, 129, 0.1); /* 은은한 초록 배경 */
+  color: var(--color-success);
+  padding: 6px 12px; border-radius: 20px;
+  font-weight: 600; font-size: 0.8rem;
+  display: flex; align-items: center; gap: 6px;
+}
+.live-dot { display: inline-block; width: 8px; height: 8px; background-color: var(--color-success); border-radius: 50%; animation: pulse 2s infinite; }
+.clock { font-family: 'Roboto Mono', monospace; font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
+
 .grid-3x2 {
   flex: 1;
-  padding: 15px; /* 여백 확보 */
+  padding: 20px;
   display: grid;
-  /* 가로를 3등분 (1fr 1fr 1fr) -> 테이블이 훨씬 넓어짐 */
-  grid-template-columns: repeat(3, 1fr); 
-  grid-template-rows: repeat(2, 1fr);    
-  gap: 15px; /* 간격도 살짝 넓힘 */
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
   overflow: hidden;
 }
 
-@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
 </style>
