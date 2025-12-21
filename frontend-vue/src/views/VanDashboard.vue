@@ -8,28 +8,48 @@ const router = useRouter();
 const transactions = ref([]);
 let stompClient = null;
 
-// [웹소켓 연결]
+// 각각 다른 데이터를 담을 6개의 변수 (이제 computed가 아니라 ref입니다!)
+const allLogs = ref([]);
+const successLogs = ref([]);
+const failLogs = ref([]);
+const cancelLogs = ref([]);
+const highAmountLogs = ref([]);
+const gangnamLogs = ref([]);
+
 const connectWebSocket = () => {
   stompClient = new Client({
     brokerURL: 'ws://localhost:8081/ws-monitoring/websocket',
     onConnect: () => {
-      stompClient.subscribe('/topic/transactions', (msg) => {
-        const newData = JSON.parse(msg.body);
-        // 최신 50개까지 유지 (테이블이 넓어졌으니 조금 더 많이 보여줘도 됩니다)
-        transactions.value = [...newData, ...transactions.value].slice(0, 50);
+      
+      // [핵심] 6개의 다른 주소(Topic)를 각각 구독합니다.
+      
+      stompClient.subscribe('/topic/van/all', (msg) => {
+        allLogs.value = JSON.parse(msg.body);
+      });
+
+      stompClient.subscribe('/topic/van/success', (msg) => {
+        successLogs.value = JSON.parse(msg.body);
+      });
+
+      stompClient.subscribe('/topic/van/fail', (msg) => {
+        failLogs.value = JSON.parse(msg.body);
+      });
+
+      stompClient.subscribe('/topic/van/cancel', (msg) => {
+        cancelLogs.value = JSON.parse(msg.body);
+      });
+
+      stompClient.subscribe('/topic/van/high', (msg) => {
+        highAmountLogs.value = JSON.parse(msg.body);
+      });
+
+      stompClient.subscribe('/topic/van/gangnam', (msg) => {
+        gangnamLogs.value = JSON.parse(msg.body);
       });
     }
   });
   stompClient.activate();
 };
-
-// --- [데이터 필터링] 핵심 6가지만 남김 ---
-const allLogs = computed(() => transactions.value);
-const successLogs = computed(() => transactions.value.filter(t => t.status === 'SUCCESS'));
-const failLogs = computed(() => transactions.value.filter(t => t.status === 'FAIL'));
-const cancelLogs = computed(() => transactions.value.filter(t => t.status === 'CANCEL'));
-const highAmountLogs = computed(() => transactions.value.filter(t => t.amount >= 100000));
-const gangnamLogs = computed(() => transactions.value.filter(t => t.storeName.includes('강남')));
 
 onMounted(() => connectWebSocket());
 onUnmounted(() => stompClient && stompClient.deactivate());
@@ -39,11 +59,11 @@ onUnmounted(() => stompClient && stompClient.deactivate());
   <div class="dashboard-wrapper">
     <header>
       <div class="left">
-        <button class="home-btn" @click="router.push('/')">🏠</button>
-        <h2>VAN 통합 관제 (Wide-View)</h2>
+        <button @click="router.push('/')">🏠</button>
+        <h2>VAN 통합 관제 (Multi-Channel)</h2>
       </div>
       <div class="right">
-        <span class="live-badge"><span class="live-dot"></span>LIVE SYSTEM</span>
+        <span class="live-badge">● LIVE SYSTEM</span>
         <span class="clock">{{ new Date().toLocaleTimeString() }}</span>
       </div>
     </header>

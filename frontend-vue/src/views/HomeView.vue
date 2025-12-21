@@ -11,7 +11,7 @@
           <div class="icon-wrapper accent-blue">💳</div>
           <div class="card-content">
             <h3>VAN 거래 모니터링</h3>
-            <p>실시간 승인/취소 현황 대시보드</p>
+            <p>거래 모니터링 대시보드</p>
           </div>
           <div class="arrow">→</div>
         </div>
@@ -20,7 +20,7 @@
           <div class="icon-wrapper accent-purple">📂</div>
           <div class="card-content">
             <h3>BatchGW 모니터링</h3>
-            <p>대량 파일 송수신 현황 (준비중)</p>
+            <p>파일송수신 모니터링 (준비중)</p>
           </div>
         </div>
 
@@ -28,7 +28,7 @@
           <div class="icon-wrapper accent-green">🖥️</div>
           <div class="card-content">
             <h3>시스템 리소스</h3>
-            <p>서버 CPU/Memory 상태 (준비중)</p>
+            <p>실시간 거래내역 (준비중)</p>
           </div>
         </div>
       </div>

@@ -18,6 +18,6 @@ public class MonitoringController {
 
     @GetMapping("/recent")
     public List<Transaction> getRecentTransactions() {
-        return transactionRepository.findRecentTransactions();
+        return transactionRepository.findAllLogs();
     }
 }
