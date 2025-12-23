@@ -1,0 +1,16 @@
+server:
+  port: 8088 # 인증 서버 포트
+
+spring:
+  application:
+    name: auth-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# JWT 설정 (보안상 매우 중요한 키입니다. 실무에선 환경변수로 관리)
+jwt:
+  secret: V2FuTW9uaXRvcmluZ1N5c3RlbVNlY3JldEtleUZvckpXVFNpZ25pbmc= # Base64 인코딩된 임의의 긴 문자열
+  expiration: 3600000 # 1시간 (밀리초)
