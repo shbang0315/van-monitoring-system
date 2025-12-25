@@ -4,6 +4,7 @@
       <header>
         <h1>🚀 VAN 시스템 통합 관제탑</h1>
         <p class="subtitle">실시간 트랜잭션 및 시스템 상태 모니터링</p>
+        <button @click="handleLogout" class="logout-btn">로그아웃</button>
       </header>
       
       <div class="menu-grid">
@@ -79,4 +80,25 @@ h1 { color: var(--text-primary); font-size: 2.5rem; font-weight: 800; margin-bot
 
 .arrow { position: absolute; right: 30px; font-size: 1.5rem; color: var(--text-muted); opacity: 0; transition: all 0.3s; }
 .disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.5); }
+
+.logout-btn {
+  position: absolute; top: 20px; right: 20px; /* 우상단 배치 */
+  background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
+  padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+}
+.logout-btn:hover { border-color: var(--color-danger); color: var(--color-danger); }
 </style>
+
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const handleLogout = () => {
+  // 토큰 삭제
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('userId');
+  // 로그인 화면으로 이동
+  router.push('/login');
+};
+</script>
