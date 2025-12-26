@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:clickhouse://localhost:8123/van_db?compress=0
+    username: default
+    password:  # 로컬은 비번 없으면 비워둠 (암호화 불필요)
+    driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+  jpa:
+    hibernate:
+      ddl-auto: none # 중요! ClickHouse는 스키마 자동 생성을 끕니다.
+    show-sql: true   # 실행되는 쿼리를 로그로 확인
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+
+monitoring:
+  criteria:
+    high-amount: 50000

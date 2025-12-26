@@ -21,28 +21,6 @@ spring:
             allowedHeaders: "*"
             allowCredentials: true
 
-      # 2. 라우팅 규칙 (나중에 만들 Monitoring Service로 가는 길)
-      routes:
-        # 1. Auth Service (로그인): 검사 없이 통과 (필터 없음)
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
-          predicates:
-            - Path=/auth/**
-
-        # 2. Monitoring Service: 반드시 검문(AuthorizationHeaderFilter) 통과 필요!
-        - id: monitoring-service
-          uri: lb://MONITORING-SERVICE # 'lb'는 Load Balancer. 유레카에 등록된 대문자 이름 사용
-          predicates:
-            - Path=/api/monitoring/** # 이 주소로 들어오면 위 서비스로 토스해라
-          filters:
-            - AuthorizationHeaderFilter # <--- 우리가 만든 필터 장착!
-        
-        # (참고) WebSocket 연결도 보안이 필요하면 여기에 필터를 걸 수 있습니다.
-        - id: monitoring-websocket
-          uri: lb://MONITORING-SERVICE
-          predicates:
-            - Path=/ws-monitoring/**
-
 eureka:
   client:
     register-with-eureka: true
@@ -50,5 +28,5 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/ # Discovery Service 주소
 
-jwt:
-  secret: V2FuTW9uaXRvcmluZ1N5c3RlbVNlY3JldEtleUZvckpXVFNpZ25pbmc=
+# jwt:
+#   secret: V2FuTW9uaXRvcmluZ1N5c3RlbVNlY3JldEtleUZvckpXVFNpZ25pbmc=

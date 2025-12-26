@@ -21,15 +21,15 @@
           <div class="icon-wrapper accent-purple">📂</div>
           <div class="card-content">
             <h3>BatchGW 모니터링</h3>
-            <p>파일송수신 모니터링 (준비중)</p>
+            <p>파일송수신 (준비중)</p>
           </div>
         </div>
 
         <div class="menu-card disabled">
           <div class="icon-wrapper accent-green">🖥️</div>
           <div class="card-content">
-            <h3>시스템 리소스</h3>
-            <p>실시간 거래내역 (준비중)</p>
+            <h3>RTSD 모니터링</h3>
+            <p>실시간거래내역 (준비중)</p>
           </div>
         </div>
       </div>

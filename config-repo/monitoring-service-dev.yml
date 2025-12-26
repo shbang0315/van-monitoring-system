@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    # Jasypt로 암호화된 값 사용 (ENC로 감싸야 함)
+    url: ENC(f8d9s+f9sd8f...) # Dev DB IP
+    username: ENC(a8s7d6...)
+    password: ENC(zxcv12...)
+  jpa:
+    show-sql: true
+
+monitoring:
+  criteria:
+    high-amount: 50000

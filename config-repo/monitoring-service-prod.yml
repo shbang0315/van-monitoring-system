@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: ENC(q2w3e4...) # Prod DB IP
+    username: ENC(r5t6y7...)
+    password: ENC(u8i9o0...)
+  jpa:
+    show-sql: false # 운영 성능 위해 끔
+
+monitoring:
+  criteria:
+    high-amount: 1000000 # 운영 기준 (100만원)

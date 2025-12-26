@@ -56,8 +56,8 @@ const handleLogin = async () => {
     <div class="login-card">
       <div class="brand-section">
         <div class="logo-icon">🔒</div>
-        <h1>VAN System</h1>
-        <p class="subtitle">엔터프라이즈 통합 관제 시스템</p>
+        <h1>KICC Monitoring System</h1>
+        <p class="subtitle">VAN 통합 관제 시스템</p>
       </div>
 
       <form @submit.prevent="handleLogin" class="form-section">
