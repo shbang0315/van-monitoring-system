@@ -20,4 +20,4 @@ spring:
 
 # JWT 비밀키 암호화 (JasyptTest로 암호화해서 넣으세요)
 jwt:
-  secret: ENC(/8y7zDCkQNdh7ZGoY3vHpESC7ZI/NYkPNOC66KXNmWlU8w+c9I+Q+d7gP3GsRrLBi9p4QXfghYwCwbI6wWQWP8Fk1pLrc6dB)
+  secret: ENC(jutA/DnFlMw+n1CtbE/R34KKVLp9jPbS0HAJLB0bsN38WWLN85/zG99xmq/3/9AIJ+K3yBY93dXnPdJ54fSXlcZJkCK4JPzOuo8mvW2YqgyKaCT30lw9ffrMqs5xbbup)

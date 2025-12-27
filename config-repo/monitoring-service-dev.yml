@@ -1,11 +1,18 @@
 spring:
   datasource:
-    # Jasypt로 암호화된 값 사용 (ENC로 감싸야 함)
-    url: ENC(f8d9s+f9sd8f...) # Dev DB IP
-    username: ENC(a8s7d6...)
-    password: ENC(zxcv12...)
+    url: jdbc:clickhouse://localhost:8123/van_db?compress=0
+    username: default
+    password:  # 로컬은 비번 없으면 비워둠 (암호화 불필요)
+    driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
   jpa:
-    show-sql: true
+    hibernate:
+      ddl-auto: none # 중요! ClickHouse는 스키마 자동 생성을 끕니다.
+    show-sql: true   # 실행되는 쿼리를 로그로 확인
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
 
 monitoring:
   criteria:
