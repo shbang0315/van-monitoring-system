@@ -17,6 +17,7 @@ management:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor # (선택) 커스텀 빈 사용 시
+    algorithm: PBEWITHHMACSHA512ANDAES_256
 
 eureka:
   client:

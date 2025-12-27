@@ -53,3 +53,10 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+test {
+    testLogging {
+        // 테스트 실행 시 System.out.println 내용을 항상 보여줘라!
+        showStandardStreams = true
+    }
+}
