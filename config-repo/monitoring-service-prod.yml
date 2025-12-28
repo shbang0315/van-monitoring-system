@@ -7,5 +7,20 @@ spring:
     show-sql: false # 운영 성능 위해 끔
 
 monitoring:
+  scheduler:
+    rates:
+      all: 1000
+      success: 5000
+      fail: 2000
+      cancel: 5000
+      high: 5000
+      gangnam: 10000
   criteria:
     high-amount: 1000000 # 운영 기준 (100만원)
+
+logging:
+  level:
+    root: INFO
+    com.van: WARN # 에러나 경고만 기록
+  file:
+    # path: /app/logs/monitoring # 리눅스 서버 로그 경로

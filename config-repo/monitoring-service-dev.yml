@@ -15,5 +15,13 @@ spring:
           use_jdbc_metadata_defaults: false
 
 monitoring:
+  scheduler:
+    rates:
+      all: 1000
+      success: 5000
+      fail: 2000
+      cancel: 5000
+      high: 5000
+      gangnam: 10000
   criteria:
     high-amount: 50000

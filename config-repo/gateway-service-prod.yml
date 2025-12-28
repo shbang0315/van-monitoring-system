@@ -1,0 +1,23 @@
+# 라우팅 정보 (환경별로 주소가 다를 수 있으므로 Config로 관리)
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+        - id: monitoring-service
+          uri: lb://MONITORING-SERVICE
+          predicates:
+            - Path=/api/monitoring/**, /ws-monitoring/**
+          filters:
+            - AuthorizationHeaderFilter
+        - id: monitoring-websocket
+          uri: lb://MONITORING-SERVICE
+          predicates:
+            - Path=/ws-monitoring/**
+
+# JWT 비밀키 암호화 (JasyptTest로 암호화해서 넣으세요)
+jwt:
+  secret: ENC(jutA/DnFlMw+n1CtbE/R34KKVLp9jPbS0HAJLB0bsN38WWLN85/zG99xmq/3/9AIJ+K3yBY93dXnPdJ54fSXlcZJkCK4JPzOuo8mvW2YqgyKaCT30lw9ffrMqs5xbbup)
