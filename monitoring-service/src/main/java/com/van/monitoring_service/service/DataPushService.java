@@ -25,29 +25,12 @@ public class DataPushService {
     @Value("${monitoring.criteria.high-amount:100000}")
     private Long highAmountCriteria;
 
-    @Scheduled(fixedRate = 3000)
-    public void pushRealTimeData() {
-        
-        // 1. 전체
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rate:3000}")
+
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rates.all:3000}")
+    public void pushAllLogs() {
         messagingTemplate.convertAndSend("/topic/van/all", transactionRepository.findAllLogs());
 
-        // 2. 성공
-        messagingTemplate.convertAndSend("/topic/van/success", transactionRepository.findSuccessLogs());
-        
-        // 3. 실패
-        messagingTemplate.convertAndSend("/topic/van/fail", transactionRepository.findFailLogs());
-        
-        // 4. 취소
-        messagingTemplate.convertAndSend("/topic/van/cancel", transactionRepository.findCancelLogs());
-        
-        // 5. 고액
-        messagingTemplate.convertAndSend("/topic/van/high", transactionRepository.findHighAmountLogs());
-        
-        // 6. 강남
-        messagingTemplate.convertAndSend("/topic/van/gangnam", transactionRepository.findGangnamLogs());
-        
-        log.info("📡 Pushed 6 distinct datasets via WebSocket");
-        
         // [로직 추가] 설정된 기준금액보다 크면 Log를 찍거나 상태를 변경
         // for (Transaction t : transactions) {
         //     if (t.getAmount() >= highAmountCriteria) {
@@ -57,5 +40,31 @@ public class DataPushService {
         // }
 
         // messagingTemplate.convertAndSend("/topic/transactions", transactions);
+    }
+
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rates.success:5000}")
+    public void pushSuccessLogs() {
+        messagingTemplate.convertAndSend("/topic/van/success", transactionRepository.findSuccessLogs());
+    }
+
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rates.fail:3000}")
+    public void pushFailLogs() {
+        messagingTemplate.convertAndSend("/topic/van/fail", transactionRepository.findFailLogs());
+    }
+
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rates.cancel:5000}")
+    public void pushCancelLogs() {
+        messagingTemplate.convertAndSend("/topic/van/cancel", transactionRepository.findCancelLogs());
+    }
+
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rates.high:5000}")
+    public void pushHighAmountLogs() {
+        // (필요 시 여기서 highAmountCriteria 사용 가능)
+        messagingTemplate.convertAndSend("/topic/van/high", transactionRepository.findHighAmountLogs());
+    }
+
+    @Scheduled(fixedRateString = "${monitoring.scheduler.rates.gangnam:10000}")
+    public void pushGangnamLogs() {
+        messagingTemplate.convertAndSend("/topic/van/gangnam", transactionRepository.findGangnamLogs());
     }
 }
