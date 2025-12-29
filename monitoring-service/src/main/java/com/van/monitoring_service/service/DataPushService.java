@@ -2,6 +2,8 @@ package com.van.monitoring_service.service;
 
 import com.van.monitoring_service.domain.Transaction;
 import com.van.monitoring_service.repository.TransactionRepository;
+import com.van.monitoring_service.domain.TxnDetailDto;
+import com.van.monitoring_service.repository.TxnDetailDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,11 +23,11 @@ public class DataPushService {
     private final TransactionRepository transactionRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
+    private final TxnDetailDao txnDetailDao;
+
     // Config Server에서 값 주입 (기본값 100000)
     @Value("${monitoring.criteria.high-amount:100000}")
     private Long highAmountCriteria;
-
-    @Scheduled(fixedRateString = "${monitoring.scheduler.rate:3000}")
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.all:3000}")
     public void pushAllLogs() {
@@ -66,5 +68,10 @@ public class DataPushService {
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.gangnam:10000}")
     public void pushGangnamLogs() {
         messagingTemplate.convertAndSend("/topic/van/gangnam", transactionRepository.findGangnamLogs());
+    }
+
+    @Scheduled(fixedRateString = "3000")
+    public void pushItmxData() {
+        messagingTemplate.convertAndSend("/topic/van/itmx", txnDetailDao.findItmxTransaction());
     }
 }

@@ -13,7 +13,7 @@ const successLogs = ref([]);
 const failLogs = ref([]);
 const cancelLogs = ref([]);
 const highAmountLogs = ref([]);
-const gangnamLogs = ref([]);
+const itmxLogs = ref([]);
 
 // --- [NEW] 구역별 컬럼 정의 (Columns) ---
 
@@ -55,11 +55,11 @@ const highAmountCols = [
 ];
 
 // 6. VIP 강남점
-const gangnamCols = [
-  { label: '시간', key: 'transactionTime', type: 'time', width: '25%' },
-  { label: '지점', key: 'storeName', width: '30%' },
-  { label: '금액', key: 'amount', type: 'money', align: 'right', width: '30%' },
-  { label: '.', key: 'status', type: 'status', align: 'center', width: '15%' }
+const itmxCols = [
+  { label: '시간', key: 'time', type: 'time', width: '25%' },
+  { label: '기관', key: 'inst_code', type: 'inst_code', width: '30%' },
+  { label: 'tid', key: 'tid', type: 'tid', align: 'right', width: '30%' },
+  { label: '응답코드', key: 'trx_resp_cd', type: 'trx_resp_cd', align: 'center', width: '15%' }
 ];
 
 
@@ -75,7 +75,7 @@ const connectWebSocket = () => {
       stompClient.subscribe('/topic/van/fail', (msg) => { failLogs.value = JSON.parse(msg.body); });
       stompClient.subscribe('/topic/van/cancel', (msg) => { cancelLogs.value = JSON.parse(msg.body); });
       stompClient.subscribe('/topic/van/high', (msg) => { highAmountLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/gangnam', (msg) => { gangnamLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx', (msg) => { itmxLogs.value = JSON.parse(msg.body); });
     }
   });
   stompClient.activate();
@@ -135,9 +135,9 @@ onUnmounted(() => stompClient && stompClient.deactivate());
       />
       
       <MonitoringTable 
-        title="🏢 VIP점 (강남본점)" 
-        :data="gangnamLogs" 
-        :columns="gangnamCols" 
+        title="🏢 인터맥스 DB" 
+        :data="itmxLogs" 
+        :columns="itmxCols" 
         type="default" 
       />
     </div>
