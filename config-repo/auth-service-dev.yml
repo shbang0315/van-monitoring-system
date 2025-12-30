@@ -1,6 +1,11 @@
 server:
   port: 8088
 
+auth:
+  user:
+    username: admin
+    password: ENC(XVgn3uzVTtS74HuHdT4c+0jPm7xFs1LXY+ZPFuhK0r3QZQcKpuj7FTyngMzotQIg)
+
 jwt:
-  secret: ENC(/8y7zDCkQNdh7ZGoY3vHpESC7ZI/NYkPNOC66KXNmWlU8w+c9I+Q+d7gP3GsRrLBi9p4QXfghYwCwbI6wWQWP8Fk1pLrc6dB)
+  secret: ENC(OzLHbfuW/TOTtA1uG4ZwS0nZXbOvlXvwKwQlu9utdvqEHyt3oNs12rQe5qbZHgmnfq1TEjY8lj+VCSbtha3VCDOtbz2oLafFVaaEveBqULKNvCfO3Yx9nyepxJ45h2mc)
   expiration: 3600000 # 1시간

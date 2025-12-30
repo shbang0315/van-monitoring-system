@@ -40,12 +40,12 @@ public class JasyptTest {
         // --- 암호화할 데이터 입력 ---
         String url = "jdbc:clickhouse://192.168.10.55:8123/van_db";
         String username = "admin";
-        String password = "real_password_!@#";
+        String password = "admin";
         String jwtSecret = "V2FuTW9uaXRvcmluZ1N5c3RlbVNlY3JldEtleUZvckpXVFNpZ25pbmc=";
 
         System.out.println("URL: ENC(" + encryptor.encrypt(url) + ")");
         System.out.println("ID: ENC(" + encryptor.encrypt(username) + ")");
-        System.out.println("PW: ENC(" + encryptor.encrypt(password) + ")");
+        System.out.println("PASSWD: ENC(" + encryptor.encrypt(password) + ")");
         System.out.println("JWT: ENC(" + encryptor.encrypt(jwtSecret) + ")");
     }
 }
