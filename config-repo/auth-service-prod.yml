@@ -1,6 +1,11 @@
 server:
   port: 8088
 
+auth:
+  user:
+    username: ENC(c9/4PRnRrFHOEwq7J3FlhXffr8Tdf6M+CR5EDMpSt1VLplYmXBx/I42deCLB4OTK)
+    password: ENC(XVgn3uzVTtS74HuHdT4c+0jPm7xFs1LXY+ZPFuhK0r3QZQcKpuj7FTyngMzotQIg)
+
 jwt:
   # Gateway의 설정과 토씨 하나 안 틀리고 똑같아야 함!
   secret: ENC(/8y7zDCkQNdh7ZGoY3vHpESC7ZI/NYkPNOC66KXNmWlU8w+c9I+Q+d7gP3GsRrLBi9p4QXfghYwCwbI6wWQWP8Fk1pLrc6dB)

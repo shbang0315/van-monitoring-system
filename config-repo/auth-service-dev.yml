@@ -3,7 +3,7 @@ server:
 
 auth:
   user:
-    username: admin
+    username: ENC(c9/4PRnRrFHOEwq7J3FlhXffr8Tdf6M+CR5EDMpSt1VLplYmXBx/I42deCLB4OTK)
     password: ENC(XVgn3uzVTtS74HuHdT4c+0jPm7xFs1LXY+ZPFuhK0r3QZQcKpuj7FTyngMzotQIg)
 
 jwt:
