@@ -1,5 +1,6 @@
 package com.van.auth_service.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -34,5 +35,29 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    // 1. 토큰에서 Username(ID) 추출
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    // 2. 토큰 유효성 검사 (만료 여부 확인 등)
+    public boolean validateToken(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // (보조 메서드) 모든 Claims 추출 (이미 있다면 패스)
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key) // key는 기존에 만들어둔 SecretKey 객체
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
