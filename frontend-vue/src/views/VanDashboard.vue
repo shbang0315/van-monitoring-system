@@ -90,7 +90,7 @@ onUnmounted(() => stompClient && stompClient.deactivate());
     <header>
       <div class="left">
         <button @click="router.push('/')" class="home-btn">🏠 Home</button>
-        <h2>VAN 통합 관제 (Custom Grid)</h2>
+        <h2>VAN 통합 관제</h2>
       </div>
       <div class="right">
         <span class="live-badge"><span class="live-dot"></span>LIVE SYSTEM</span>
