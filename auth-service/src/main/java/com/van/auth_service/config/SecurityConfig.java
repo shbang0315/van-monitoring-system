@@ -1,16 +1,19 @@
 package com.van.auth_service.config;
 
+import com.van.auth_service.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder; // [중요] import 확인
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import com.van.auth_service.filter.JwtAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -18,28 +21,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserDetailsService userDetailsService; // 서비스 주입
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    // 생성자 주입
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. CSRF 보안 비활성화 (JWT를 사용할 것이므로 불필요)
             .csrf(csrf -> csrf.disable())
-
-            // 2. 세션 관리 비활성화 (Stateless 모드)
-            // Spring Security가 세션을 생성하거나 사용하지 않도록 설정합니다.
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-            // 3. 요청 권한 설정
             .authorizeHttpRequests(auth -> auth
-                // /auth/login 등 인증 관련 경로는 누구나 접근 가능하게 허용
                 .requestMatchers("/auth/**").permitAll()
-                // Actuator 상태 확인 경로도 열어두기 (선택)
                 .requestMatchers("/actuator/**").permitAll()
-                // 그 외 모든 요청은 인증된 사용자만 접근 가능
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -47,16 +44,20 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 비밀번호 암호화 도구 (BCrypt) 빈 등록
+    // 순환 참조 방지를 위해 수동으로 Manager 생성
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(authProvider);
     }
 
-    // 인증 관리자 (AuthenticationManager) 빈 등록
-    // 나중에 로그인 로직에서 이 친구를 불러서 ID/PW 검사를 시킬 겁니다.
+    // {noop} 등의 접두사를 처리할 수 있는 DelegatingPasswordEncoder 사용
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
