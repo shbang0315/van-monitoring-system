@@ -9,3 +9,15 @@ auth:
 jwt:
   secret: ENC(OzLHbfuW/TOTtA1uG4ZwS0nZXbOvlXvwKwQlu9utdvqEHyt3oNs12rQe5qbZHgmnfq1TEjY8lj+VCSbtha3VCDOtbz2oLafFVaaEveBqULKNvCfO3Yx9nyepxJ45h2mc)
   expiration: 3600000 # 1시간
+
+logging:
+  level:
+    root: INFO
+    com.van: DEBUG
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB       # 파일 하나당 5MB 넘으면 새로 만듦
+      max-history: 30           # 30일 지난 로그는 자동 삭제
+      file-name-pattern: logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log

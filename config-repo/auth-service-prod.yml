@@ -10,3 +10,15 @@ jwt:
   # Gateway의 설정과 토씨 하나 안 틀리고 똑같아야 함!
   secret: ENC(/8y7zDCkQNdh7ZGoY3vHpESC7ZI/NYkPNOC66KXNmWlU8w+c9I+Q+d7gP3GsRrLBi9p4QXfghYwCwbI6wWQWP8Fk1pLrc6dB)
   expiration: 3600000 # 1시간
+
+logging:
+  level:
+    root: INFO
+    com.van: DEBUG
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB       # 파일 하나당 5MB 넘으면 새로 만듦
+      max-history: 30           # 30일 지난 로그는 자동 삭제
+      file-name-pattern: logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
