@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TxnDetailDto {
     private LocalDateTime time;       
-    private String inst_code;
-    private String tid;
-    private String trx_resp_cd;
+    private String tx_code;
+    private String login_name;
 }

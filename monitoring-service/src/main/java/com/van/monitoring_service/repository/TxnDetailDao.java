@@ -16,15 +16,16 @@ public class TxnDetailDao {
 
     public List<TxnDetailDto> findItmxTransaction() {
         String sql = """
-            SELECT
-                time as time,
-                inst_code as inst_code,
-                tid as tid,
-                trx_resp_cd as trx_resp_cd
-            FROM XAPM_TXN_DETAIL
-            WHERE 1=1
-            ORDER BY time DESC
-            LIMIT 100
+            SELECT 
+                formatDateTime(MAX(TIME), '%Y-%m-%d %H:%i:%S') AS LAST_TIME
+                , splitByChar('_', assumeNotNull(LOGIN_NAME))[1] INST_CODE
+                , count(*) as COUNT
+            FROM XAPM_TXN_DETAIL A 
+            WHERE toDate(TIME) = today()
+            AND LENGTH(TX_CODE) = 9 AND TX_CODE like '0%_%' AND TX_CODE NOT LIKE '0098_%' AND WAS_ID in (30081,30001,30002,30091)
+            GROUP BY splitByChar('_', assumeNotNull(LOGIN_NAME))[1]
+            ORDER BY COUNT(*) DESC
+            LIMIT 30
         """;
 
         return jdbcTemplate.query(
