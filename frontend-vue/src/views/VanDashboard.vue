@@ -13,11 +13,60 @@ const successLogs = ref([]);
 const failLogs = ref([]);
 const cancelLogs = ref([]);
 const highAmountLogs = ref([]);
-const itmxLogs = ref([]);
+const itmxCrdtLogs = ref([]);
+const itmxPontLogs = ref([]);
+const itmxCashLogs = ref([]);
+const itmxCrdtRespLogs = ref([]);
+const itmxPontRespLogs = ref([]);
+const itmxCashRespLogs = ref([]);
 
 // --- [NEW] 구역별 컬럼 정의 (Columns) ---
+// 1. INST_CODE 별 거래 건수(신용)
+const itmxCrdtCols = [
+  { label: '거래시간', key: 'lastTime', type: 'time', width: '25%' },
+  { label: '기관(INST_CODE)', key: 'instCode', width: '30%' },
+  { label: '건수', key: 'count', align: 'right', width: '20%' },
+  { label: '거절률', key: 'rejectRate', align: 'right', width: '25%' }
+];
 
-// 1. 전체 거래 로그 (기본)
+// 2. INST_CODE 별 거래 건수(포인트)
+const itmxPontCols = [
+  { label: '거래시간', key: 'lastTime', type: 'time', width: '25%' },
+  { label: '기관(INST_CODE)', key: 'instCode', width: '30%' },
+  { label: '건수', key: 'count', align: 'right', width: '20%' },
+  { label: '거절률', key: 'rejectRate', align: 'right', width: '25%' }
+];
+
+// 3. INST_CODE 별 거래 건수(현금영수증)
+const itmxCashCols = [
+  { label: '거래시간', key: 'lastTime', type: 'time', width: '25%' },
+  { label: '기관(INST_CODE)', key: 'instCode', width: '30%' },
+  { label: '건수', key: 'count', align: 'right', width: '20%' },
+  { label: '거절률', key: 'rejectRate', align: 'right', width: '25%' }
+];
+
+// 4. 응답코드별 건수(신용)
+const itmxCrdtRespCols = [
+  { label: '발생시간', key: 'lastTime', type: 'time', width: '30%' },
+  { label: '응답코드', key: 'trxRespCd', width: '25%' },
+  { label: '건수', key: 'count', align: 'right', width: '25%' }
+];
+
+// 5. 응답코드별 건수(포인트)
+const itmxPontRespCols = [
+  { label: '발생시간', key: 'lastTime', type: 'time', width: '30%' },
+  { label: '응답코드', key: 'trxRespCd', width: '25%' },
+  { label: '건수', key: 'count', align: 'right', width: '25%' }
+];
+
+// 6. 응답코드별 건수(현금)
+const itmxCashRespCols = [
+  { label: '발생시간', key: 'lastTime', type: 'time', width: '30%' },
+  { label: '응답코드', key: 'trxRespCd', width: '25%' },
+  { label: '건수', key: 'count', align: 'right', width: '25%' }
+];
+
+// 2. 전체 거래 로그 (기본)
 const allLogsCols = [
   { label: '시간', key: 'transactionTime', type: 'time', width: '22%' },
   { label: '가맹점명', key: 'storeName', width: '38%' },
@@ -25,14 +74,14 @@ const allLogsCols = [
   { label: '상태', key: 'status', type: 'status', align: 'center', width: '15%' }
 ];
 
-// 2. 승인 성공 (상태 컬럼 생략, 가맹점 강조)
+// 3. 승인 성공 (상태 컬럼 생략, 가맹점 강조)
 const successCols = [
   { label: '승인시간', key: 'transactionTime', type: 'time', width: '25%' },
   { label: '가맹점 (정상승인)', key: 'storeName', width: '45%', highlight: true }, 
   { label: '매출액', key: 'amount', type: 'money', align: 'right', width: '30%' }
 ];
 
-// 3. 오류/실패 (에러 집중)
+// 4. 오류/실패 (에러 집중)
 const failCols = [
   { label: '발생시간', key: 'transactionTime', type: 'time', width: '25%' },
   { label: '가맹점', key: 'storeName', width: '30%' },
@@ -40,28 +89,19 @@ const failCols = [
   { label: '경고', key: 'status', type: 'status', align: 'center', width: '20%' }
 ];
 
-// 4. 취소 거래 (단순화)
+// 5. 취소 거래 (단순화)
 const cancelCols = [
   { label: '취소시간', key: 'transactionTime', type: 'time', width: '25%' },
   { label: '취소 가맹점', key: 'storeName', width: '40%' },
   { label: '취소금액', key: 'amount', type: 'money', align: 'right', width: '35%' }
 ];
 
-// 5. 고액 결제 (금액 강조)
+// 6. 고액 결제 (금액 강조)
 const highAmountCols = [
   { label: '시간', key: 'transactionTime', type: 'time', width: '20%' },
   { label: 'VIP 가맹점', key: 'storeName', width: '30%' },
   { label: '고액 매출', key: 'amount', type: 'money', align: 'right', width: '50%', highlight: true }
 ];
-
-// 6. VIP 강남점
-const itmxCols = [
-  { label: '시간', key: 'time', type: 'time', width: '25%' },
-  { label: '기관', key: 'inst_code', type: 'inst_code', width: '30%' },
-  { label: 'tid', key: 'tid', type: 'tid', align: 'right', width: '30%' },
-  { label: '응답코드', key: 'trx_resp_cd', type: 'trx_resp_cd', align: 'center', width: '15%' }
-];
-
 
 // --- WebSocket 연결 ---
 const connectWebSocket = () => {
@@ -70,13 +110,19 @@ const connectWebSocket = () => {
     brokerURL: 'ws://localhost:8081/ws-monitoring/websocket',
     onConnect: () => {
       // 6개 채널 구독
-      stompClient.subscribe('/topic/van/all', (msg) => { allLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/success', (msg) => { successLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/fail', (msg) => { failLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/cancel', (msg) => { cancelLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/high', (msg) => { highAmountLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/itmx', (msg) => { itmxLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx/crdt', (msg) => { itmxCrdtLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx/pont', (msg) => { itmxPontLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx/cash', (msg) => { itmxCashLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx/crdtResp', (msg) => { itmxCrdtRespLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx/pontResp', (msg) => { itmxPontRespLogs.value = JSON.parse(msg.body); });
+      stompClient.subscribe('/topic/van/itmx/cashResp', (msg) => { itmxCashRespLogs.value = JSON.parse(msg.body); });
+      // stompClient.subscribe('/topic/van/all', (msg) => { allLogs.value = JSON.parse(msg.body); });
+      // stompClient.subscribe('/topic/van/success', (msg) => { successLogs.value = JSON.parse(msg.body); });
+      // stompClient.subscribe('/topic/van/fail', (msg) => { failLogs.value = JSON.parse(msg.body); });
+      // stompClient.subscribe('/topic/van/cancel', (msg) => { cancelLogs.value = JSON.parse(msg.body); });
+      // stompClient.subscribe('/topic/van/high', (msg) => { highAmountLogs.value = JSON.parse(msg.body); });
     }
+    
   });
   stompClient.activate();
 };
@@ -99,28 +145,50 @@ onUnmounted(() => stompClient && stompClient.deactivate());
     </header>
 
     <div class="grid-3x2">
+
       <MonitoringTable 
-        title="📜 전체 거래 로그" 
-        :data="allLogs" 
-        :columns="allLogsCols" 
+        title="🏢 INST_CODE 별 거래 건수(신용)" 
+        :data="itmxCrdtLogs" 
+        :columns="itmxCrdtCols" 
+        type="default" 
+      />
+
+      <MonitoringTable 
+        title="📜 INST_CODE 별 거래 건수(포인트)" 
+        :data="itmxPontLogs" 
+        :columns="itmxPontCols" 
         type="default" 
       />
       
       <MonitoringTable 
-        title="✅ 승인 성공" 
-        :data="successLogs" 
-        :columns="successCols" 
-        type="success" 
+        title="✅ INST_CODE 별 거래 건수(현금)" 
+        :data="itmxCashLogs" 
+        :columns="itmxCashCols" 
+        type="default" 
       />
       
       <MonitoringTable 
-        title="🚨 오류/실패 감지" 
-        :data="failLogs" 
-        :columns="failCols" 
+        title="🚨 응답코드별 건수(신용)" 
+        :data="itmxCrdtRespLogs" 
+        :columns="itmxCrdtRespCols" 
         type="danger" 
       />
 
       <MonitoringTable 
+        title="🚨 응답코드별 건수(포인트)" 
+        :data="itmxPontRespLogs" 
+        :columns="itmxPontRespCols" 
+        type="danger" 
+      />
+
+      <MonitoringTable 
+        title="🚨 응답코드별 건수(현금)" 
+        :data="itmxCashRespLogs" 
+        :columns="itmxCashRespCols" 
+        type="danger" 
+      />
+
+      <!--<MonitoringTable 
         title="↩️ 취소 거래" 
         :data="cancelLogs" 
         :columns="cancelCols" 
@@ -132,14 +200,8 @@ onUnmounted(() => stompClient && stompClient.deactivate());
         :data="highAmountLogs" 
         :columns="highAmountCols" 
         type="warning" 
-      />
-      
-      <MonitoringTable 
-        title="🏢 인터맥스 DB" 
-        :data="itmxLogs" 
-        :columns="itmxCols" 
-        type="default" 
-      />
+      /> -->
+
     </div>
   </div>
 </template>

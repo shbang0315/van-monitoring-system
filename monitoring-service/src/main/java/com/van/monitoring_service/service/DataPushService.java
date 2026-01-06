@@ -31,7 +31,7 @@ public class DataPushService {
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.all:3000}")
     public void pushAllLogs() {
-        messagingTemplate.convertAndSend("/topic/van/all", transactionRepository.findAllLogs());
+        // messagingTemplate.convertAndSend("/topic/van/all", transactionRepository.findAllLogs());
 
         // [로직 추가] 설정된 기준금액보다 크면 Log를 찍거나 상태를 변경
         // for (Transaction t : transactions) {
@@ -46,32 +46,64 @@ public class DataPushService {
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.success:5000}")
     public void pushSuccessLogs() {
-        messagingTemplate.convertAndSend("/topic/van/success", transactionRepository.findSuccessLogs());
+        // messagingTemplate.convertAndSend("/topic/van/success", transactionRepository.findSuccessLogs());
     }
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.fail:3000}")
     public void pushFailLogs() {
-        messagingTemplate.convertAndSend("/topic/van/fail", transactionRepository.findFailLogs());
+        // messagingTemplate.convertAndSend("/topic/van/fail", transactionRepository.findFailLogs());
     }
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.cancel:5000}")
     public void pushCancelLogs() {
-        messagingTemplate.convertAndSend("/topic/van/cancel", transactionRepository.findCancelLogs());
+        // messagingTemplate.convertAndSend("/topic/van/cancel", transactionRepository.findCancelLogs());
     }
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.high:5000}")
     public void pushHighAmountLogs() {
         // (필요 시 여기서 highAmountCriteria 사용 가능)
-        messagingTemplate.convertAndSend("/topic/van/high", transactionRepository.findHighAmountLogs());
+        // messagingTemplate.convertAndSend("/topic/van/high", transactionRepository.findHighAmountLogs());
     }
 
     @Scheduled(fixedRateString = "${monitoring.scheduler.rates.gangnam:10000}")
     public void pushGangnamLogs() {
-        messagingTemplate.convertAndSend("/topic/van/gangnam", transactionRepository.findGangnamLogs());
+        // messagingTemplate.convertAndSend("/topic/van/gangnam", transactionRepository.findGangnamLogs());
     }
 
-    @Scheduled(fixedRateString = "3000")
-    public void pushItmxData() {
-        messagingTemplate.convertAndSend("/topic/van/itmx", txnDetailDao.findItmxTransaction());
+    @Scheduled(fixedRateString = "10000")
+    public void pushItmxCrdtData() {
+        log.info("Data : {}", txnDetailDao.findItmxCrdtTransaction().toString());
+        messagingTemplate.convertAndSend("/topic/van/itmx/crdt", txnDetailDao.findItmxCrdtTransaction());
     }
+
+    @Scheduled(fixedRateString = "10000")
+    public void pushItmxPontData() {
+        log.info("Data : {}", txnDetailDao.findItmxPontTransaction().toString());
+        messagingTemplate.convertAndSend("/topic/van/itmx/pont", txnDetailDao.findItmxPontTransaction());
+    }
+
+    @Scheduled(fixedRateString = "10000")
+    public void pushItmxCashData() {
+        log.info("Data : {}", txnDetailDao.findItmxCashTransaction().toString());
+        messagingTemplate.convertAndSend("/topic/van/itmx/cash", txnDetailDao.findItmxCashTransaction());
+    }
+
+    @Scheduled(fixedRateString = "10000")
+    public void pushItmxCrdtRespData() {
+        log.info("Data : {}", txnDetailDao.findItmxCrdtRespTransaction().toString());
+        messagingTemplate.convertAndSend("/topic/van/itmx/crdtResp", txnDetailDao.findItmxCrdtRespTransaction());
+    }
+
+    @Scheduled(fixedRateString = "10000")
+    public void pushItmxPontRespData() {
+        log.info("Data : {}", txnDetailDao.findItmxCrdtRespTransaction().toString());
+        messagingTemplate.convertAndSend("/topic/van/itmx/pontResp", txnDetailDao.findItmxPontRespTransaction());
+    }
+
+    @Scheduled(fixedRateString = "10000")
+    public void pushItmxCashRespData() {
+        log.info("Data : {}", txnDetailDao.findItmxCrdtRespTransaction().toString());
+        messagingTemplate.convertAndSend("/topic/van/itmx/cashResp", txnDetailDao.findItmxCashRespTransaction());
+    }
+
 }

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TxnDetailDto {
-    private LocalDateTime time;       
-    private String tx_code;
-    private String login_name;
+    private LocalDateTime lastTime;       
+    private String instCode;
+    private String count;
+    private String rejectRate;
+    private String trxRespCd;
 }
