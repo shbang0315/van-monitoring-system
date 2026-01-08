@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+// import axios from 'axios';
+import api from '@/api/axios';
 
 const router = useRouter();
 
@@ -23,15 +24,14 @@ const handleLogin = async () => {
 
   try {
     // 1. Gateway를 통해 Auth Service로 요청 (8000번 포트)
-    const response = await axios.post('http://localhost:8000/auth/login', {
+    const response = await api.post('http://localhost:8000/auth/login', {
       userId: userId.value,
       password: password.value
     });
 
-    // 2. 토큰 저장 (Local Storage)
-    const token = response.data.accessToken;
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('userId', response.data.userId);
+    // 2. AccessToken과 RefreshToken 모두 저장
+    localStorage.setItem('accessToken', response.data.accessToken);
+    localStorage.setItem('refreshToken', response.data.refreshToken);
 
     console.log('✅ 로그인 성공! 토큰 저장 완료.');
 

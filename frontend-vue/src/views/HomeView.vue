@@ -91,14 +91,27 @@ h1 { color: var(--text-primary); font-size: 2.5rem; font-weight: 800; margin-bot
 
 <script setup>
 import { useRouter } from 'vue-router';
+import api from '@/api/axios';
 
 const router = useRouter();
 
-const handleLogout = () => {
-  // 토큰 삭제
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('userId');
-  // 로그인 화면으로 이동
-  router.push('/login');
+const handleLogout = async () => {
+  try {
+    const username = "admin";
+    
+    // 1. 서버에 로그아웃 요청 (Redis Refresh Token 삭제)
+    await api.post('/auth/logout', username);
+    console.log("서버 로그아웃 성공");
+
+  } catch (error) {
+    console.error("서버 로그아웃 실패(이미 만료되었거나 서버 오류):", error);
+  } finally {
+    // 2. 클라이언트 정보 삭제 (무조건 실행)
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    
+    // 3. 로그인 페이지로 이동
+    router.push('/login');
+  }
 };
 </script>
