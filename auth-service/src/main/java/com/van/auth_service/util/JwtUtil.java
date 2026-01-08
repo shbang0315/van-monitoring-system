@@ -19,7 +19,10 @@ public class JwtUtil {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expiration;
+    private long accessTokenExpiration;
+
+    @Value("${jwt.refresh-expiration}")
+    private long refreshTokenExpiration;
 
     private Key key;
 
@@ -30,13 +33,23 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 토큰 생성 (ID와 역할을 담음)
-    public String generateToken(String userId, String role) {
+    // Access Token 생성
+    public String generateAccessToken(String userId, String role) {
+        return createToken(userId, role, accessTokenExpiration);
+    }
+
+    // Refresh Token 생성
+    public String generateRefreshToken(String userId, String role) {
+        return createToken(userId, role, refreshTokenExpiration);
+    }
+
+    // 실제 토큰 생성 로직 공통화
+    private String createToken(String userId, String role, long expirationTime) {
         return Jwts.builder()
                 .setSubject(userId)
-                .claim("role", role) // 사용자 권한 정보 추가
+                .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

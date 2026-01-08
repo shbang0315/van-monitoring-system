@@ -16,6 +16,7 @@ auth:
 jwt:
   secret: ENC(OzLHbfuW/TOTtA1uG4ZwS0nZXbOvlXvwKwQlu9utdvqEHyt3oNs12rQe5qbZHgmnfq1TEjY8lj+VCSbtha3VCDOtbz2oLafFVaaEveBqULKNvCfO3Yx9nyepxJ45h2mc)
   expiration: 3600000 # 1시간
+  refresh-expiration: 86400000 # 1일
 
 logging:
   level:
