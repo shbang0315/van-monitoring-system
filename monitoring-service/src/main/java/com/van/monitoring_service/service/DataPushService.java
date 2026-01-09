@@ -23,7 +23,8 @@ public class DataPushService {
     private final TransactionRepository transactionRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-    private final TxnDetailDao txnDetailDao;
+    // private final TxnDetailDao txnDetailDao;
+    private final DashboardService dashboardService;
 
     // Config Server에서 값 주입 (기본값 100000)
     @Value("${monitoring.criteria.high-amount:100000}")
@@ -72,38 +73,32 @@ public class DataPushService {
 
     @Scheduled(fixedRateString = "10000")
     public void pushItmxCrdtData() {
-        log.info("Data : {}", txnDetailDao.findItmxCrdtTransaction().toString());
-        messagingTemplate.convertAndSend("/topic/van/itmx/crdt", txnDetailDao.findItmxCrdtTransaction());
+        messagingTemplate.convertAndSend("/topic/van/itmx/crdt", dashboardService.getItmxCrdtData());
     }
 
     @Scheduled(fixedRateString = "10000")
     public void pushItmxPontData() {
-        log.info("Data : {}", txnDetailDao.findItmxPontTransaction().toString());
-        messagingTemplate.convertAndSend("/topic/van/itmx/pont", txnDetailDao.findItmxPontTransaction());
+        messagingTemplate.convertAndSend("/topic/van/itmx/pont", dashboardService.getItmxPontData());
     }
 
     @Scheduled(fixedRateString = "10000")
     public void pushItmxCashData() {
-        log.info("Data : {}", txnDetailDao.findItmxCashTransaction().toString());
-        messagingTemplate.convertAndSend("/topic/van/itmx/cash", txnDetailDao.findItmxCashTransaction());
+        messagingTemplate.convertAndSend("/topic/van/itmx/cash", dashboardService.getItmxCashData());
     }
 
     @Scheduled(fixedRateString = "10000")
     public void pushItmxCrdtRespData() {
-        log.info("Data : {}", txnDetailDao.findItmxCrdtRespTransaction().toString());
-        messagingTemplate.convertAndSend("/topic/van/itmx/crdtResp", txnDetailDao.findItmxCrdtRespTransaction());
+        messagingTemplate.convertAndSend("/topic/van/itmx/crdtResp", dashboardService.getItmxCrdtRespData());
     }
 
     @Scheduled(fixedRateString = "10000")
     public void pushItmxPontRespData() {
-        log.info("Data : {}", txnDetailDao.findItmxCrdtRespTransaction().toString());
-        messagingTemplate.convertAndSend("/topic/van/itmx/pontResp", txnDetailDao.findItmxPontRespTransaction());
+        messagingTemplate.convertAndSend("/topic/van/itmx/pontResp", dashboardService.getItmxPontRespData());
     }
 
     @Scheduled(fixedRateString = "10000")
     public void pushItmxCashRespData() {
-        log.info("Data : {}", txnDetailDao.findItmxCrdtRespTransaction().toString());
-        messagingTemplate.convertAndSend("/topic/van/itmx/cashResp", txnDetailDao.findItmxCashRespTransaction());
+        messagingTemplate.convertAndSend("/topic/van/itmx/cashResp", dashboardService.getItmxCashRespData());
     }
 
 }

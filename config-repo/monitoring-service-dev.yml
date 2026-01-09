@@ -18,6 +18,8 @@ spring:
       host: localhost
       port: 6379
       # password:
+      cache:
+        type: redis
 
 logging:
   level:
