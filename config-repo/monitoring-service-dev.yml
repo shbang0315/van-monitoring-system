@@ -34,6 +34,21 @@ logging:
       max-history: 30           # 30일 지난 로그는 자동 삭제
       file-name-pattern: logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
 
+spring:
+  kafka:
+    # kafka server.properties의 advertised.listeners
+    bootstrap-servers: localhost:9092 
+    consumer:
+      group-id: monitoring-group # 컨슈머 그룹 ID
+      auto-offset-reset: latest  # 가장 최근 메시지부터 수신
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*" # 모든 패키지의 객체 수신 허용
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 monitoring:
   scheduler:
     rates:
