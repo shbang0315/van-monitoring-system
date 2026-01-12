@@ -1,4 +1,4 @@
-package com.van.monitoring_service.domain;
+package com.van.monitoring_service.domain.dto;
 
 import jakarta.persistence.*;
 import lombok.*;

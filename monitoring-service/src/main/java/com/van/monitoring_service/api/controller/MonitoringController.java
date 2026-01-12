@@ -1,7 +1,8 @@
-package com.van.monitoring_service.controller;
+package com.van.monitoring_service.api.controller;
 
-import com.van.monitoring_service.domain.Transaction;
-import com.van.monitoring_service.repository.TransactionRepository;
+import com.van.monitoring_service.domain.dto.Transaction;
+import com.van.monitoring_service.domain.repository.TransactionRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

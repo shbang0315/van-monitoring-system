@@ -1,9 +1,11 @@
-package com.van.monitoring_service.repository;
+package com.van.monitoring_service.domain.repository;
 
-import com.van.monitoring_service.domain.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.van.monitoring_service.domain.dto.Transaction;
+
 import java.util.List;
 
 @Repository

@@ -20,21 +20,6 @@ spring:
       # password:
       cache:
         type: redis
-
-logging:
-  level:
-    root: INFO
-    org.springframework.jdbc.core.JdbcTemplate: DEBUG
-    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
-  file:
-    name: logs/${spring.application.name}.log
-  logback:
-    rollingpolicy:
-      max-file-size: 5MB       # 파일 하나당 5MB 넘으면 새로 만듦
-      max-history: 30           # 30일 지난 로그는 자동 삭제
-      file-name-pattern: logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
-
-spring:
   kafka:
     # kafka server.properties의 advertised.listeners
     bootstrap-servers: localhost:9092 
@@ -48,6 +33,19 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB       # 파일 하나당 5MB 넘으면 새로 만듦
+      max-history: 30           # 30일 지난 로그는 자동 삭제
+      file-name-pattern: logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
 
 monitoring:
   scheduler:

@@ -1,7 +1,8 @@
-package com.van.monitoring_service.service;
+package com.van.monitoring_service.api.service;
 
-import com.van.monitoring_service.domain.TxnDetailDto;
-import com.van.monitoring_service.repository.TxnDetailDao;
+import com.van.monitoring_service.domain.dto.TxnDetailDto;
+import com.van.monitoring_service.domain.repository.TxnDetailDao;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DashboardService {
+public class DashboardQueryService {
 
     private final TxnDetailDao txnDetailDao;
 

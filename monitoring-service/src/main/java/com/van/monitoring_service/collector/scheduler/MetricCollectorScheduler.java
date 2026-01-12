@@ -1,7 +1,8 @@
-package com.van.monitoring_service.service;
+package com.van.monitoring_service.collector.scheduler;
 
-import com.van.monitoring_service.domain.TxnDetailDto;
-import com.van.monitoring_service.repository.TxnDetailDao;
+import com.van.monitoring_service.domain.dto.TxnDetailDto;
+import com.van.monitoring_service.domain.repository.TxnDetailDao;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MonitoringProducer {
+public class MetricCollectorScheduler {
 
     private final TxnDetailDao txnDetailDao;
     private final KafkaTemplate<String, Object> kafkaTemplate;

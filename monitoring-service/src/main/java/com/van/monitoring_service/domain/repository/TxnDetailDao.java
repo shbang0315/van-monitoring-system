@@ -1,10 +1,11 @@
-package com.van.monitoring_service.repository;
+package com.van.monitoring_service.domain.repository;
 
-import com.van.monitoring_service.domain.TxnDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.van.monitoring_service.domain.dto.TxnDetailDto;
 
 import java.util.List;
 
