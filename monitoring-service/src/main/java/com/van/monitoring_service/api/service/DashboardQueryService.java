@@ -6,8 +6,10 @@ import com.van.monitoring_service.domain.repository.TxnDetailDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -15,40 +17,38 @@ import java.util.List;
 @Slf4j
 public class DashboardQueryService {
 
-    private final TxnDetailDao txnDetailDao;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    // [캐싱 전략]
-    // DataPushService가 10초마다 호출하므로, TTL(RedisConfig)을 5~9초로 설정하면
-    // Scheduler가 돌 때마다 DB를 갱신하고 Redis에 저장합니다.
-    // 사용자가 새로고침(Controller 호출)할 때는 Redis에서 즉시 가져갑니다.
-
-    @Cacheable(value = "itmx_crdt", key = "'latest'")
     public List<TxnDetailDto> getItmxCrdtData() {
-        return txnDetailDao.findItmxCrdtTransaction();
+        return getRedisData("itmx_crdt::latest");
     }
 
-    @Cacheable(value = "itmx_pont", key = "'latest'")
     public List<TxnDetailDto> getItmxPontData() {
-        return txnDetailDao.findItmxPontTransaction();
+        return getRedisData("itmx_pont::latest");
     }
 
-    @Cacheable(value = "itmx_cash", key = "'latest'")
     public List<TxnDetailDto> getItmxCashData() {
-        return txnDetailDao.findItmxCashTransaction();
+        return getRedisData("itmx_cash::latest");
     }
 
-    @Cacheable(value = "itmx_crdt_resp", key = "'latest'")
     public List<TxnDetailDto> getItmxCrdtRespData() {
-        return txnDetailDao.findItmxCrdtRespTransaction();
+        return getRedisData("itmx_crdt_resp::latest");
     }
 
-    @Cacheable(value = "itmx_pont_resp", key = "'latest'")
     public List<TxnDetailDto> getItmxPontRespData() {
-        return txnDetailDao.findItmxPontRespTransaction();
+        return getRedisData("itmx_pont_resp::latest");
     }
 
-    @Cacheable(value = "itmx_cash_resp", key = "'latest'")
     public List<TxnDetailDto> getItmxCashRespData() {
-        return txnDetailDao.findItmxCashRespTransaction();
+        return getRedisData("itmx_cash_resp::latest");
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<TxnDetailDto> getRedisData(String key) {
+        Object data = redisTemplate.opsForValue().get(key);
+        if (data == null) {
+            return Collections.emptyList(); // 데이터가 아직 안 만들어졌으면 빈 리스트
+        }
+        return (List<TxnDetailDto>) data;
     }
 }
