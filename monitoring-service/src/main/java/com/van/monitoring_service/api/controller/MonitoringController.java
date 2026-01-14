@@ -1,6 +1,8 @@
 package com.van.monitoring_service.api.controller;
 
+import com.van.monitoring_service.api.service.DashboardQueryService;
 import com.van.monitoring_service.domain.dto.Transaction;
+import com.van.monitoring_service.domain.dto.TxnDetailDto;
 import com.van.monitoring_service.domain.repository.TransactionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MonitoringController {
 
-    private final TransactionRepository transactionRepository;
+    private final DashboardQueryService dashboardQueryService;
 
-    @GetMapping("/recent")
-    public List<Transaction> getRecentTransactions() {
-        return transactionRepository.findAllLogs();
+    @GetMapping("/itmx/crdt")
+    public List<TxnDetailDto> getItmxCrdt() {
+        return dashboardQueryService.getItmxCrdtData();
+    }
+
+    @GetMapping("/itmx/pont")
+    public List<TxnDetailDto> getItmxPont() {
+        return dashboardQueryService.getItmxPontData();
+    }
+
+    @GetMapping("/itmx/cash")
+    public List<TxnDetailDto> getItmxCash() {
+        return dashboardQueryService.getItmxCashData();
+    }
+
+    @GetMapping("/itmx/cashResp")
+    public List<TxnDetailDto> getItmxCrdtResp() {
+        return dashboardQueryService.getItmxCrdtRespData();
+    }
+
+    @GetMapping("/itmx/cashResp")
+    public List<TxnDetailDto> getItmxPontResp() {
+        return dashboardQueryService.getItmxPontRespData();
+    }
+
+    @GetMapping("/itmx/cashResp")
+    public List<TxnDetailDto> getItmxCashResp() {
+        return dashboardQueryService.getItmxCashRespData();
     }
 }
