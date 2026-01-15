@@ -36,12 +36,12 @@ public class MonitoringController {
         return dashboardQueryService.getItmxCashData();
     }
 
-    @GetMapping("/itmx/cashResp")
+    @GetMapping("/itmx/crdtResp")
     public List<TxnDetailDto> getItmxCrdtResp() {
         return dashboardQueryService.getItmxCrdtRespData();
     }
 
-    @GetMapping("/itmx/cashResp")
+    @GetMapping("/itmx/pontResp")
     public List<TxnDetailDto> getItmxPontResp() {
         return dashboardQueryService.getItmxPontRespData();
     }
