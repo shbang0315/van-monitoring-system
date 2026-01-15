@@ -17,6 +17,19 @@ spring:
           uri: lb://MONITORING-SERVICE
           predicates:
             - Path=/ws-monitoring/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
 
 # JWT 비밀키 암호화 (JasyptTest로 암호화해서 넣으세요)
 jwt:
