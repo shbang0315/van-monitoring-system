@@ -3,16 +3,12 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { Client } from '@stomp/stompjs';
 import { useRouter } from 'vue-router';
 import MonitoringTable from '../components/MonitoringTable.vue';
+import api from '@/api/axios';
 
 const router = useRouter();
 let stompClient = null;
 
 // --- 데이터 변수 ---
-const allLogs = ref([]);
-const successLogs = ref([]);
-const failLogs = ref([]);
-const cancelLogs = ref([]);
-const highAmountLogs = ref([]);
 const itmxCrdtLogs = ref([]);
 const itmxPontLogs = ref([]);
 const itmxCashLogs = ref([]);
@@ -66,69 +62,73 @@ const itmxCashRespCols = [
   { label: '건수', key: 'count', align: 'right', width: '25%' }
 ];
 
-// 2. 전체 거래 로그 (기본)
-const allLogsCols = [
-  { label: '시간', key: 'transactionTime', type: 'time', width: '22%' },
-  { label: '가맹점명', key: 'storeName', width: '38%' },
-  { label: '금액', key: 'amount', type: 'money', align: 'right', width: '25%' },
-  { label: '상태', key: 'status', type: 'status', align: 'center', width: '15%' }
-];
+// 초기 데이터 로딩 함수 (REST API)
+const loadInitialData = async () => {
+  try {
+    // Promise.all로 병렬 요청하여 로딩 속도 최적화
+    const [crdt, pont, cash, crdtResp, pontResp, cashResp] = await Promise.all([
+      api.get('/api/monitoring/itmx/crdt'),
+      api.get('/api/monitoring/itmx/pont'),
+      api.get('/api/monitoring/itmx/cash'),
+      api.get('/api/monitoring/itmx/crdtResp'),
+      api.get('/api/monitoring/itmx/pontResp'),
+      api.get('/api/monitoring/itmx/cashResp')
+    ]);
+    
+    // Redis에서 가져온 최신값으로 즉시 세팅
+    itmxCrdtLogs.value = crdt.data;
+    itmxPontLogs.value = pont.data;
+    itmxCashLogs.value = cash.data;
+    itmxCrdtRespLogs.value = crdtResp.data;
+    itmxPontRespLogs.value = pontResp.data;
+    itmxCashRespLogs.value = cashResp.data;
+    
+    console.log("✅ 초기 데이터 로딩 완료");
+  } catch (e) {
+    console.error("초기 데이터 로딩 실패:", e);
+  }
+};
 
-// 3. 승인 성공 (상태 컬럼 생략, 가맹점 강조)
-const successCols = [
-  { label: '승인시간', key: 'transactionTime', type: 'time', width: '25%' },
-  { label: '가맹점 (정상승인)', key: 'storeName', width: '45%', highlight: true }, 
-  { label: '매출액', key: 'amount', type: 'money', align: 'right', width: '30%' }
-];
-
-// 4. 오류/실패 (에러 집중)
-const failCols = [
-  { label: '발생시간', key: 'transactionTime', type: 'time', width: '25%' },
-  { label: '가맹점', key: 'storeName', width: '30%' },
-  { label: '요청액', key: 'amount', type: 'money', align: 'right', width: '25%' },
-  { label: '경고', key: 'status', type: 'status', align: 'center', width: '20%' }
-];
-
-// 5. 취소 거래 (단순화)
-const cancelCols = [
-  { label: '취소시간', key: 'transactionTime', type: 'time', width: '25%' },
-  { label: '취소 가맹점', key: 'storeName', width: '40%' },
-  { label: '취소금액', key: 'amount', type: 'money', align: 'right', width: '35%' }
-];
-
-// 6. 고액 결제 (금액 강조)
-const highAmountCols = [
-  { label: '시간', key: 'transactionTime', type: 'time', width: '20%' },
-  { label: 'VIP 가맹점', key: 'storeName', width: '30%' },
-  { label: '고액 매출', key: 'amount', type: 'money', align: 'right', width: '50%', highlight: true }
-];
-
-// --- WebSocket 연결 ---
 const connectWebSocket = () => {
   stompClient = new Client({
-    // [주의] 실제 운영 시 이 주소는 환경 변수나 설정에서 가져오도록 변경 권장
-    brokerURL: 'ws://localhost:8081/ws-monitoring/websocket',
+    brokerURL: 'ws://localhost:8081/ws-monitoring/websocket', // Gateway 포트(8080) 또는 모니터링 포트(8081) 확인 필요
+    reconnectDelay: 5000,
     onConnect: () => {
-      // 6개 채널 구독
-      stompClient.subscribe('/topic/van/itmx/crdt', (msg) => { itmxCrdtLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/itmx/pont', (msg) => { itmxPontLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/itmx/cash', (msg) => { itmxCashLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/itmx/crdtResp', (msg) => { itmxCrdtRespLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/itmx/pontResp', (msg) => { itmxPontRespLogs.value = JSON.parse(msg.body); });
-      stompClient.subscribe('/topic/van/itmx/cashResp', (msg) => { itmxCashRespLogs.value = JSON.parse(msg.body); });
-      // stompClient.subscribe('/topic/van/all', (msg) => { allLogs.value = JSON.parse(msg.body); });
-      // stompClient.subscribe('/topic/van/success', (msg) => { successLogs.value = JSON.parse(msg.body); });
-      // stompClient.subscribe('/topic/van/fail', (msg) => { failLogs.value = JSON.parse(msg.body); });
-      // stompClient.subscribe('/topic/van/cancel', (msg) => { cancelLogs.value = JSON.parse(msg.body); });
-      // stompClient.subscribe('/topic/van/high', (msg) => { highAmountLogs.value = JSON.parse(msg.body); });
-    }
-    
+      console.log('Connected to WebSocket');
+      
+      // 실시간 데이터 구독 (이후 변경사항은 여기서 처리)
+      stompClient.subscribe('/topic/van/itmx/crdt', (message) => {
+        itmxCrdtLogs.value = JSON.parse(message.body);
+      });
+      stompClient.subscribe('/topic/van/itmx/pont', (message) => {
+        itmxPontLogs.value = JSON.parse(message.body);
+      });
+      stompClient.subscribe('/topic/van/itmx/cash', (message) => {
+        itmxCashLogs.value = JSON.parse(message.body);
+      });
+      stompClient.subscribe('/topic/van/itmx/crdtResp', (message) => {
+        itmxCrdtRespLogs.value = JSON.parse(message.body);
+      });
+      stompClient.subscribe('/topic/van/itmx/pontResp', (message) => {
+        itmxPontRespLogs.value = JSON.parse(message.body);
+      });
+      stompClient.subscribe('/topic/van/itmx/cashResp', (message) => {
+        itmxCashRespLogs.value = JSON.parse(message.body);
+      });
+    },
   });
   stompClient.activate();
 };
 
-onMounted(() => connectWebSocket());
-onUnmounted(() => stompClient && stompClient.deactivate());
+onMounted(async () => {
+  await loadInitialData(); // 1. 먼저 채우고
+  connectWebSocket();      // 2. 소켓 연결
+});
+
+onUnmounted(() => {
+  if (stompClient) stompClient.deactivate();
+});
+
 </script>
 
 <template>
