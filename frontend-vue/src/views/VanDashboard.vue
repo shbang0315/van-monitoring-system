@@ -91,7 +91,7 @@ const loadInitialData = async () => {
 
 const connectWebSocket = () => {
   stompClient = new Client({
-    brokerURL: 'ws://localhost:8081/ws-monitoring/websocket', // Gateway 포트(8080) 또는 모니터링 포트(8081) 확인 필요
+    brokerURL: import.meta.env.VITE_WS_URL,
     reconnectDelay: 5000,
     onConnect: () => {
       console.log('Connected to WebSocket');

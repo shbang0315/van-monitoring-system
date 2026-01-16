@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 // 1. Axios 인스턴스 생성
 const instance = axios.create({
-  baseURL: 'http://localhost:8088', // Gateway 주소
+  baseURL: baseURL,
+  timeout: 5000,
 });
 
 // 2. 요청 인터셉터: 모든 요청 헤더에 AccessToken 실어 보내기
@@ -31,7 +34,7 @@ instance.interceptors.response.use(
         const refreshToken = localStorage.getItem('refreshToken');
         
         // Refresh Token으로 재발급 요청
-        const { data } = await axios.post('http://localhost:8088/auth/reissue', {
+        const { data } = await axios.post(`${baseURL}/auth/reissue`, {
           refreshToken: refreshToken
         });
 
